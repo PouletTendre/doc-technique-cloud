@@ -1,0 +1,261 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Topologie réseau globale et flux · Architecture</title>
+  <link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&amp;family=Geist:wght@400;500;600&amp;family=Geist+Mono:wght@400;500;600&amp;display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --color-paper:   #f5f5f5;
+      --color-ink:     #2d3142;
+      --color-muted:   #4f5d75;
+      --color-accent:  #bf4520;
+      --font-sans:     'Geist', system-ui, sans-serif;
+      --font-serif:    'Instrument Serif', serif;
+      --font-mono:     'Geist Mono', ui-monospace, monospace;
+    }
+
+    body {
+      font-family: var(--font-sans);
+      background: var(--color-paper);
+      color: var(--color-ink);
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 3rem 2rem;
+    }
+
+    .frame { max-width: 1200px; width: 100%; }
+    .diagram-container { width: 100%; overflow-x: auto; }
+
+    .eyebrow {
+      font-family: var(--font-mono);
+      font-size: 0.66rem;
+      font-weight: 500;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--color-muted);
+      margin-bottom: 0.5rem;
+    }
+
+    h1 {
+      font-family: var(--font-serif);
+      font-size: clamp(1.5rem, 2.4vw + 0.75rem, 2rem);
+      font-weight: 400;
+      letter-spacing: -0.02em;
+      line-height: 1.15;
+      color: var(--color-ink);
+      margin-bottom: 1.5rem;
+    }
+
+    svg { width: 100%; min-width: 1280px; display: block; }
+    @media print {
+      .diagram-container { overflow-x: visible; }
+      svg { min-width: 0; }
+    }
+  </style>
+</head>
+<body>
+  <div class="frame">
+    <p class="eyebrow">Architecture · Réseau CaaScad</p>
+    <h1>Topologie réseau IPv6-only, routage HA et plan d'administration OOB</h1>
+
+    <div class="diagram-container">
+      <svg viewBox="0 0 1280 700" xmlns="http://www.w3.org/2000/svg" role="img" aria-labelledby="topologie-reseau-title topologie-reseau-desc">
+        <title id="topologie-reseau-title">Topologie réseau IPv6-only et plan OOB</title>
+        <desc id="topologie-reseau-desc">Architecture réseau reliant Internet et le campus à la paire de pare-feux OPNsense via nat-gw et cloudflared, vers les VLANs routés GUA et le réseau d'administration hors bande ULA VLAN 790.</desc>
+        <defs>
+          <marker id="arrow" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto"><polygon points="0 0, 8 3, 0 6" fill="#4f5d75"/></marker>
+          <marker id="arrow-accent" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto"><polygon points="0 0, 8 3, 0 6" fill="#bf4520"/></marker>
+          <marker id="arrow-link" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto"><polygon points="0 0, 8 3, 0 6" fill="#2e5aa8"/></marker>
+        </defs>
+
+        <rect width="100%" height="100%" fill="#f5f5f5"/>
+
+        <!-- Zones (drawn first) -->
+        <!-- Zone 1: Périmètre Externe -->
+        <rect x="40" y="36" width="280" height="404" rx="8" fill="rgba(45,49,66,0.02)" stroke="rgba(45,49,66,0.10)" stroke-width="0.8"/>
+        <rect x="56" y="40" width="128" height="12" rx="2" fill="#f5f5f5"/>
+        <text x="120" y="49" fill="#5a6580" font-size="7" font-family="'Geist Mono', monospace" text-anchor="middle" letter-spacing="0.14em">EXTÉRIEUR &amp; TRANSIT</text>
+
+        <!-- Zone 2: Zones Routées GUA -->
+        <rect x="640" y="36" width="600" height="404" rx="8" fill="rgba(45,49,66,0.02)" stroke="rgba(45,49,66,0.10)" stroke-width="0.8"/>
+        <rect x="656" y="40" width="212" height="12" rx="2" fill="#f5f5f5"/>
+        <text x="762" y="49" fill="#5a6580" font-size="7" font-family="'Geist Mono', monospace" text-anchor="middle" letter-spacing="0.14em">VLANS ROUTÉS GUA · 2001:678:3fc:bb00::/56</text>
+
+        <!-- Zone 3: Plan OOB -->
+        <rect x="40" y="468" width="1200" height="124" rx="8" fill="rgba(45,49,66,0.02)" stroke="rgba(45,49,66,0.10)" stroke-width="0.8"/>
+        <rect x="56" y="472" width="236" height="12" rx="2" fill="#f5f5f5"/>
+        <text x="174" y="481" fill="#5a6580" font-size="7" font-family="'Geist Mono', monospace" text-anchor="middle" letter-spacing="0.14em">PLAN OOB L2 ISOLÉ · VLAN 790 (fd07:63fe:c5dd:1::/64)</text>
+
+        <!-- Arrows (drawn before boxes) -->
+        <!-- Internet -> nat-gw -->
+        <line x1="180" y1="140" x2="180" y2="204" stroke="#2e5aa8" stroke-width="1.2" marker-end="url(#arrow-link)"/>
+        <!-- nat-gw -> OPNsense HA -->
+        <line x1="300" y1="240" x2="396" y2="240" stroke="#bf4520" stroke-width="1.4" marker-end="url(#arrow-accent)"/>
+        <!-- Internet -> Cloudflare -> Bastion (Cloudflare Edge node on left) -->
+        <line x1="300" y1="364" x2="660" y2="364" stroke="#2e5aa8" stroke-width="1" stroke-dasharray="4,3" marker-end="url(#arrow-link)"/>
+        <!-- Internet -> Cloudflare direct -->
+        <line x1="180" y1="268" x2="180" y2="332" stroke="none"/>
+        <path d="M 100,140 V 364 H 80" fill="none" stroke="none"/>
+        <!-- Connect Internet left edge to Cloudflare left edge around nat-gw -->
+        <path d="M 80,108 H 52 Q 44,108 44,116 V 356 Q 44,364 52,364 H 80" fill="none" stroke="#2e5aa8" stroke-width="1.2" stroke-dasharray="5,4" marker-end="url(#arrow-link)"/>
+
+        <!-- OPNsense HA -> Routed Zones (fanned on right edge x=580, y=192..288) -->
+        <!-- Port 1 (y=212) -> Cluster Interne (y=116) -->
+        <path d="M 580,212 H 612 Q 620,212 620,204 V 124 Q 620,116 628,116 H 660" fill="none" stroke="#4f5d75" stroke-width="1.2" marker-end="url(#arrow)"/>
+        <!-- Port 2 (y=236) -> Cluster Client (y=240) -->
+        <path d="M 580,236 H 660" fill="none" stroke="#4f5d75" stroke-width="1.2" marker-end="url(#arrow)"/>
+        <!-- Port 3 (y=260) -> LAN User/Copieur (y=116, right column x=964) routed via y=184 -->
+        <path d="M 580,260 H 612 Q 620,260 620,268 V 292 Q 620,300 628,300 H 928 Q 936,300 936,292 V 124 Q 936,116 944,116 H 964" fill="none" stroke="#4f5d75" stroke-width="1.2" marker-end="url(#arrow)"/>
+        <!-- Port 4 (y=284) -> Services Infra (y=364) -->
+        <path d="M 580,284 H 604 Q 612,284 612,292 V 340 Q 612,348 620,348 H 660" fill="none" stroke="#4f5d75" stroke-width="1.2" marker-end="url(#arrow)"/>
+
+        <!-- CUPS relay arrow: Interne -> LAN User/Copieur -->
+        <line x1="904" y1="116" x2="964" y2="116" stroke="#4f5d75" stroke-width="1" stroke-dasharray="4,3" marker-end="url(#arrow)"/>
+
+        <!-- Bastion -> OOB Bus -->
+        <line x1="784" y1="400" x2="784" y2="504" stroke="#bf4520" stroke-width="1.4" marker-end="url(#arrow-accent)"/>
+        <!-- Runner-infra -> OOB Bus -->
+        <line x1="1084" y1="400" x2="1084" y2="504" stroke="#4f5d75" stroke-width="1.2" marker-end="url(#arrow)"/>
+        <!-- OOB internal links -->
+        <line x1="300" y1="536" x2="360" y2="536" stroke="#4f5d75" stroke-width="1.2" marker-end="url(#arrow)"/>
+        <line x1="600" y1="536" x2="660" y2="536" stroke="#4f5d75" stroke-width="1.2" marker-end="url(#arrow)"/>
+        <line x1="904" y1="536" x2="964" y2="536" stroke="#4f5d75" stroke-width="1.2" marker-end="url(#arrow)"/>
+
+        <!-- Arrow labels (with opaque masks and 6-10px gap) -->
+        <rect x="192" y="164" width="68" height="12" rx="2" fill="#f5f5f5"/>
+        <text x="226" y="173" fill="#2e5aa8" font-size="8" font-family="'Geist Mono', monospace" text-anchor="middle" letter-spacing="0.06em">VLAN 52</text>
+
+        <rect x="308" y="216" width="80" height="12" rx="2" fill="#f5f5f5"/>
+        <text x="348" y="225" fill="#bf4520" font-size="8" font-family="'Geist Mono', monospace" text-anchor="middle" letter-spacing="0.06em">780 · SNAT</text>
+
+        <rect x="412" y="340" width="124" height="12" rx="2" fill="#f5f5f5"/>
+        <text x="474" y="349" fill="#2e5aa8" font-size="8" font-family="'Geist Mono', monospace" text-anchor="middle" letter-spacing="0.06em">TUNNEL SORTANT 7844</text>
+
+        <rect x="908" y="96" width="52" height="12" rx="2" fill="#f5f5f5"/>
+        <text x="934" y="105" fill="#4f5d75" font-size="8" font-family="'Geist Mono', monospace" text-anchor="middle" letter-spacing="0.06em">CUPS 631</text>
+
+        <rect x="668" y="444" width="108" height="12" rx="2" fill="#f5f5f5"/>
+        <text x="722" y="453" fill="#bf4520" font-size="8" font-family="'Geist Mono', monospace" text-anchor="middle" letter-spacing="0.06em">REBOND ADMIN OOB</text>
+
+        <!-- Nodes: Zone 1 (External) -->
+        <!-- Internet / Campus -->
+        <rect x="80" y="76" width="220" height="64" rx="6" fill="#f5f5f5"/>
+        <rect x="80" y="76" width="220" height="64" rx="6" fill="rgba(45,49,66,0.03)" stroke="rgba(45,49,66,0.30)" stroke-width="1"/>
+        <rect x="88" y="84" width="32" height="12" rx="2" fill="transparent" stroke="rgba(45,49,66,0.22)" stroke-width="0.8"/>
+        <text x="104" y="93" fill="#5a6580" font-size="7" font-family="'Geist Mono', monospace" text-anchor="middle" letter-spacing="0.08em">EXT</text>
+        <text x="190" y="108" fill="#2d3142" font-size="12" font-weight="600" font-family="'Geist', sans-serif" text-anchor="middle">Internet &amp; Campus</text>
+        <text x="190" y="126" fill="#4f5d75" font-size="9" font-family="'Geist Mono', monospace" text-anchor="middle">gitlab.inetdoc.net · Hetzner</text>
+
+        <!-- nat-gw -->
+        <rect x="80" y="204" width="220" height="68" rx="6" fill="#f5f5f5"/>
+        <rect x="80" y="204" width="220" height="68" rx="6" fill="rgba(191,69,32,0.08)" stroke="#bf4520" stroke-width="1"/>
+        <rect x="88" y="212" width="44" height="12" rx="2" fill="transparent" stroke="rgba(191,69,32,0.50)" stroke-width="0.8"/>
+        <text x="110" y="221" fill="#bf4520" font-size="7" font-family="'Geist Mono', monospace" text-anchor="middle" letter-spacing="0.08em">TRANSIT</text>
+        <text x="190" y="236" fill="#2d3142" font-size="12" font-weight="600" font-family="'Geist', sans-serif" text-anchor="middle">nat-gw (Eve)</text>
+        <text x="190" y="254" fill="#4f5d75" font-size="9" font-family="'Geist Mono', monospace" text-anchor="middle">nftables masquerade v6 + v4</text>
+
+        <!-- Cloudflare Edge -->
+        <rect x="80" y="332" width="220" height="68" rx="6" fill="#f5f5f5"/>
+        <rect x="80" y="332" width="220" height="68" rx="6" fill="rgba(45,49,66,0.03)" stroke="rgba(45,49,66,0.30)" stroke-width="1"/>
+        <rect x="88" y="340" width="32" height="12" rx="2" fill="transparent" stroke="rgba(45,49,66,0.22)" stroke-width="0.8"/>
+        <text x="104" y="349" fill="#5a6580" font-size="7" font-family="'Geist Mono', monospace" text-anchor="middle" letter-spacing="0.08em">EDGE</text>
+        <text x="190" y="364" fill="#2d3142" font-size="12" font-weight="600" font-family="'Geist', sans-serif" text-anchor="middle">Cloudflare Zero Trust</text>
+        <text x="190" y="382" fill="#4f5d75" font-size="9" font-family="'Geist Mono', monospace" text-anchor="middle">Exposition entrante HTTPS</text>
+
+        <!-- Central Hub: OPNsense HA -->
+        <rect x="396" y="188" width="184" height="112" rx="6" fill="#f5f5f5"/>
+        <rect x="396" y="188" width="184" height="112" rx="6" fill="#ffffff" stroke="#2d3142" stroke-width="1.2"/>
+        <rect x="404" y="196" width="52" height="12" rx="2" fill="transparent" stroke="rgba(45,49,66,0.40)" stroke-width="0.8"/>
+        <text x="430" y="205" fill="#2d3142" font-size="7" font-family="'Geist Mono', monospace" text-anchor="middle" letter-spacing="0.08em">COEUR HA</text>
+        <text x="488" y="224" fill="#2d3142" font-size="12" font-weight="600" font-family="'Geist', sans-serif" text-anchor="middle">OPNsense fw1 / fw2</text>
+        <text x="488" y="244" fill="#4f5d75" font-size="9" font-family="'Geist Mono', monospace" text-anchor="middle">CARP :ffff · pfsync 791</text>
+        <text x="488" y="260" fill="#4f5d75" font-size="9" font-family="'Geist Mono', monospace" text-anchor="middle">FRR BGP · Unbound DNS64</text>
+        <text x="488" y="276" fill="#4f5d75" font-size="9" font-family="'Geist Mono', monospace" text-anchor="middle">Tayga NAT64 · Suricata</text>
+
+        <!-- Zone 2 Nodes: Routed GUA -->
+        <!-- Cluster Interne -->
+        <rect x="660" y="80" width="244" height="72" rx="6" fill="#f5f5f5"/>
+        <rect x="660" y="80" width="244" height="72" rx="6" fill="#ffffff" stroke="#2d3142" stroke-width="1"/>
+        <rect x="668" y="88" width="56" height="12" rx="2" fill="transparent" stroke="rgba(45,49,66,0.40)" stroke-width="0.8"/>
+        <text x="696" y="97" fill="#2d3142" font-size="7" font-family="'Geist Mono', monospace" text-anchor="middle" letter-spacing="0.08em">VLAN 770</text>
+        <text x="782" y="116" fill="#2d3142" font-size="12" font-weight="600" font-family="'Geist', sans-serif" text-anchor="middle">Cluster Interne RKE2</text>
+        <text x="782" y="134" fill="#4f5d75" font-size="9" font-family="'Geist Mono', monospace" text-anchor="middle">bb20::/64 · Pods bb00/60 · LB bb21-22</text>
+
+        <!-- Cluster Client -->
+        <rect x="660" y="204" width="244" height="72" rx="6" fill="#f5f5f5"/>
+        <rect x="660" y="204" width="244" height="72" rx="6" fill="#ffffff" stroke="#2d3142" stroke-width="1"/>
+        <rect x="668" y="212" width="56" height="12" rx="2" fill="transparent" stroke="rgba(45,49,66,0.40)" stroke-width="0.8"/>
+        <text x="696" y="221" fill="#2d3142" font-size="7" font-family="'Geist Mono', monospace" text-anchor="middle" letter-spacing="0.08em">VLAN 769</text>
+        <text x="782" y="240" fill="#2d3142" font-size="12" font-weight="600" font-family="'Geist', sans-serif" text-anchor="middle">Cluster Client CaaS</text>
+        <text x="782" y="258" fill="#4f5d75" font-size="9" font-family="'Geist Mono', monospace" text-anchor="middle">bb23::/64 · Pods bb10/60 · LB bb24</text>
+
+        <!-- Classe 308 (User + Copieur) -->
+        <rect x="964" y="80" width="252" height="72" rx="6" fill="#f5f5f5"/>
+        <rect x="964" y="80" width="252" height="72" rx="6" fill="rgba(79,93,117,0.10)" stroke="#5a6580" stroke-width="1"/>
+        <rect x="972" y="88" width="68" height="12" rx="2" fill="transparent" stroke="rgba(90,101,128,0.40)" stroke-width="0.8"/>
+        <text x="1006" y="97" fill="#5a6580" font-size="7" font-family="'Geist Mono', monospace" text-anchor="middle" letter-spacing="0.08em">759 / 758</text>
+        <text x="1090" y="116" fill="#2d3142" font-size="12" font-weight="600" font-family="'Geist', sans-serif" text-anchor="middle">Postes &amp; Copieurs (308)</text>
+        <text x="1090" y="134" fill="#4f5d75" font-size="9" font-family="'Geist Mono', monospace" text-anchor="middle">bb30::/64 (User) · bb31::/64 (Cop)</text>
+
+        <!-- Bastion (760) -->
+        <rect x="660" y="328" width="244" height="72" rx="6" fill="#f5f5f5"/>
+        <rect x="660" y="328" width="244" height="72" rx="6" fill="rgba(191,69,32,0.08)" stroke="#bf4520" stroke-width="1"/>
+        <rect x="668" y="336" width="56" height="12" rx="2" fill="transparent" stroke="rgba(191,69,32,0.50)" stroke-width="0.8"/>
+        <text x="696" y="345" fill="#bf4520" font-size="7" font-family="'Geist Mono', monospace" text-anchor="middle" letter-spacing="0.08em">VLAN 760</text>
+        <text x="782" y="364" fill="#2d3142" font-size="12" font-weight="600" font-family="'Geist', sans-serif" text-anchor="middle">Bastion Guacamole + Tunnel</text>
+        <text x="782" y="382" fill="#4f5d75" font-size="9" font-family="'Geist Mono', monospace" text-anchor="middle">bb40::1 · cloudflared · OOB 1:4::4</text>
+
+        <!-- Services Hors K8s (761-763) -->
+        <rect x="964" y="328" width="252" height="72" rx="6" fill="#f5f5f5"/>
+        <rect x="964" y="328" width="252" height="72" rx="6" fill="rgba(45,49,66,0.05)" stroke="#4f5d75" stroke-width="1"/>
+        <rect x="972" y="336" width="60" height="12" rx="2" fill="transparent" stroke="rgba(79,93,117,0.50)" stroke-width="0.8"/>
+        <text x="1002" y="345" fill="#4f5d75" font-size="7" font-family="'Geist Mono', monospace" text-anchor="middle" letter-spacing="0.08em">761..763</text>
+        <text x="1090" y="364" fill="#2d3142" font-size="12" font-weight="600" font-family="'Geist', sans-serif" text-anchor="middle">PKI, Backup &amp; Runners</text>
+        <text x="1090" y="382" fill="#4f5d75" font-size="9" font-family="'Geist Mono', monospace" text-anchor="middle">bb41::1 · bb42::1 · bb43::1..2</text>
+
+        <!-- Zone 3 Nodes: OOB L2 -->
+        <rect x="64" y="504" width="236" height="64" rx="6" fill="#f5f5f5"/>
+        <rect x="64" y="504" width="236" height="64" rx="6" fill="#ffffff" stroke="#2d3142" stroke-width="1"/>
+        <text x="182" y="532" fill="#2d3142" font-size="12" font-weight="600" font-family="'Geist', sans-serif" text-anchor="middle">Administration FW &amp; VMs</text>
+        <text x="182" y="550" fill="#4f5d75" font-size="9" font-family="'Geist Mono', monospace" text-anchor="middle">SSH 22 · HTTPS 443 · nftables</text>
+
+        <rect x="360" y="504" width="240" height="64" rx="6" fill="#f5f5f5"/>
+        <rect x="360" y="504" width="240" height="64" rx="6" fill="#ffffff" stroke="#2d3142" stroke-width="1"/>
+        <text x="480" y="532" fill="#2d3142" font-size="12" font-weight="600" font-family="'Geist', sans-serif" text-anchor="middle">API Kubernetes (kube-vip)</text>
+        <text x="480" y="550" fill="#4f5d75" font-size="9" font-family="'Geist Mono', monospace" text-anchor="middle">1:1::10 (Int) · 1:2::10 (Cli) :6443</text>
+
+        <rect x="660" y="504" width="244" height="64" rx="6" fill="#f5f5f5"/>
+        <rect x="660" y="504" width="244" height="64" rx="6" fill="#ffffff" stroke="#2d3142" stroke-width="1"/>
+        <text x="782" y="532" fill="#2d3142" font-size="12" font-weight="600" font-family="'Geist', sans-serif" text-anchor="middle">Pods Multus macvlan</text>
+        <text x="782" y="550" fill="#4f5d75" font-size="9" font-family="'Geist Mono', monospace" text-anchor="middle">1:5::1 vmagent · ::2 Logs · ::3 ArgoCD</text>
+
+        <rect x="964" y="504" width="252" height="64" rx="6" fill="#f5f5f5"/>
+        <rect x="964" y="504" width="252" height="64" rx="6" fill="rgba(45,49,66,0.05)" stroke="#4f5d75" stroke-width="0.8"/>
+        <text x="1090" y="532" fill="#2d3142" font-size="12" font-weight="600" font-family="'Geist', sans-serif" text-anchor="middle">Collecte &amp; Automatisation</text>
+        <text x="1090" y="550" fill="#4f5d75" font-size="9" font-family="'Geist Mono', monospace" text-anchor="middle">runner-infra 1:4::3 · Borg 1:4::2</text>
+
+        <!-- Legend strip -->
+        <line x1="40" y1="620" x2="1240" y2="620" stroke="rgba(45,49,66,0.10)" stroke-width="0.8"/>
+        <text x="40" y="640" fill="#4f5d75" font-size="8" font-family="'Geist Mono', monospace" letter-spacing="0.14em">LÉGENDE</text>
+
+        <rect x="40" y="656" width="14" height="10" rx="2" fill="rgba(191,69,32,0.08)" stroke="#bf4520" stroke-width="1"/>
+        <text x="60" y="664" fill="#4f5d75" font-size="8.5" font-family="'Geist', sans-serif">Points pivots entrée/sortie (nat-gw, bastion)</text>
+
+        <rect x="332" y="656" width="14" height="10" rx="2" fill="#ffffff" stroke="#2d3142" stroke-width="1"/>
+        <text x="352" y="664" fill="#4f5d75" font-size="8.5" font-family="'Geist', sans-serif">Routeurs HA et clusters Kubernetes</text>
+
+        <line x1="584" y1="661" x2="616" y2="661" stroke="#2e5aa8" stroke-width="1.2" marker-end="url(#arrow-link)"/>
+        <text x="624" y="664" fill="#4f5d75" font-size="8.5" font-family="'Geist', sans-serif">Flux externes / Cloudflare</text>
+
+        <line x1="808" y1="661" x2="840" y2="661" stroke="#4f5d75" stroke-width="1.2" marker-end="url(#arrow)"/>
+        <text x="848" y="664" fill="#4f5d75" font-size="8.5" font-family="'Geist', sans-serif">Flux internes routés ou OOB L2</text>
+      </svg>
+    </div>
+  </div>
+</body>
+</html>

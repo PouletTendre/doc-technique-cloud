@@ -1,0 +1,222 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg viewBox="0 0 1280 720" xmlns="http://www.w3.org/2000/svg" role="img" aria-labelledby="decoupage-ipv6-title decoupage-ipv6-desc" id="d-02-decoupage-ipv6-root">
+        <title id="decoupage-ipv6-title">Découpage des préfixes IPv6 CaaScad</title>
+        <desc id="decoupage-ipv6-desc">Arborescence montrant la séparation entre le préfixe routé GUA 2001:678:3fc:bb00::/56 pour les VLANs et Kubernetes, le préfixe privé ULA fd07:63fe:c5dd::/48 pour l'OOB et les services cluster, et 64:ff9b::/96 pour NAT64.</desc>
+        <defs>
+      <style>@import url('https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&amp;family=Geist:wght@400;500;600&amp;family=Geist+Mono:wght@400;500;600&amp;family=Noto+Serif:ital@0;1&amp;family=Noto+Sans+KR:wght@400;500;600&amp;family=Noto+Serif+KR:wght@400&amp;family=Noto+Sans+TC:wght@400;500;600&amp;family=Noto+Serif+TC:wght@400&amp;display=swap');
+      #d-02-decoupage-ipv6-root { --color-paper:   #f5f5f5;
+      --color-ink:     #2d3142;
+      --color-muted:   #4f5d75;
+      --color-accent:  #bf4520;
+      --font-sans:     'Geist', system-ui, sans-serif;
+      --font-serif:    'Instrument Serif', serif;
+      --font-mono:     'Geist Mono', ui-monospace, monospace; }
+      #d-02-decoupage-ipv6-root { font-family: var(--font-sans); color: var(--color-ink); }
+      #d-02-decoupage-ipv6-root .diagram-container { width: 100%; overflow-x: auto; }
+      @media print {
+#d-02-decoupage-ipv6-root .diagram-container { overflow-x: visible; }
+}</style>
+          <marker id="d-02-decoupage-ipv6-arrow" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto"><polygon points="0 0, 8 3, 0 6" fill="#4f5d75"/></marker>
+          <marker id="d-02-decoupage-ipv6-arrow-accent" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto"><polygon points="0 0, 8 3, 0 6" fill="#bf4520"/></marker>
+          <marker id="d-02-decoupage-ipv6-arrow-link" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto"><polygon points="0 0, 8 3, 0 6" fill="#2e5aa8"/></marker>
+        </defs>
+
+        <rect width="100%" height="100%" fill="#f5f5f5"/>
+
+        <!-- Tier tags -->
+        <text x="40" y="92" fill="#4f5d75" font-size="8" font-family="'Geist Mono', monospace" letter-spacing="0.14em">RACINE</text>
+        <text x="40" y="216" fill="#4f5d75" font-size="8" font-family="'Geist Mono', monospace" letter-spacing="0.14em">PORTÉE</text>
+        <text x="40" y="348" fill="#4f5d75" font-size="8" font-family="'Geist Mono', monospace" letter-spacing="0.14em">BLOCS</text>
+        <text x="40" y="512" fill="#4f5d75" font-size="8" font-family="'Geist Mono', monospace" letter-spacing="0.14em">SOUS-RÉSEAUX</text>
+
+        <!-- Connectors (drawn first) -->
+        <!-- Root -> 3 scopes -->
+        <path d="M 640,116 V 148 H 376 V 184" fill="none" stroke="#4f5d75" stroke-width="1"/>
+        <path d="M 640,148 H 904 V 184" fill="none" stroke="#4f5d75" stroke-width="1"/>
+        <path d="M 640,148 H 1140 V 184" fill="none" stroke="#4f5d75" stroke-width="1"/>
+
+        <!-- GUA /56 -> 3 blocks -->
+        <path d="M 376,248 V 280 H 164 V 312" fill="none" stroke="#4f5d75" stroke-width="1"/>
+        <path d="M 376,248 V 312" fill="none" stroke="#4f5d75" stroke-width="1"/>
+        <path d="M 376,280 H 588 V 312" fill="none" stroke="#4f5d75" stroke-width="1"/>
+
+        <!-- ULA /48 -> 2 blocks -->
+        <path d="M 904,248 V 280 H 804 V 312" fill="none" stroke="#4f5d75" stroke-width="1"/>
+        <path d="M 904,280 H 1004 V 312" fill="none" stroke="#4f5d75" stroke-width="1"/>
+
+        <!-- NAT64 /96 -> leaf -->
+        <path d="M 1140,248 V 312" fill="none" stroke="#4f5d75" stroke-width="1"/>
+
+        <!-- Blocks -> Leaves -->
+        <!-- Pods /60 -> 2 leaves -->
+        <path d="M 164,376 V 408 H 112 V 440" fill="none" stroke="#4f5d75" stroke-width="1"/>
+        <path d="M 164,408 H 216 V 440" fill="none" stroke="#4f5d75" stroke-width="1"/>
+        <!-- K8s + LB -> 2 leaves -->
+        <path d="M 376,376 V 408 H 324 V 440" fill="none" stroke="#4f5d75" stroke-width="1"/>
+        <path d="M 376,408 H 428 V 440" fill="none" stroke="#4f5d75" stroke-width="1"/>
+        <!-- VLANs Campus -> 2 leaves -->
+        <path d="M 588,376 V 408 H 536 V 440" fill="none" stroke="#4f5d75" stroke-width="1"/>
+        <path d="M 588,408 H 640 V 440" fill="none" stroke="#4f5d75" stroke-width="1"/>
+        <!-- ULA OOB -> 2 leaves -->
+        <path d="M 804,376 V 408 H 752 V 440" fill="none" stroke="#4f5d75" stroke-width="1"/>
+        <path d="M 804,408 H 856 V 440" fill="none" stroke="#4f5d75" stroke-width="1"/>
+        <!-- ULA Service CIDR -> 1 merged leaf -->
+        <path d="M 1004,376 V 440" fill="none" stroke="#4f5d75" stroke-width="1"/>
+
+        <!-- Tier 0: Root -->
+        <rect x="500" y="52" width="280" height="64" rx="6" fill="#f5f5f5"/>
+        <rect x="500" y="52" width="280" height="64" rx="6" fill="#bf4520" stroke="#bf4520" stroke-width="1" fill-opacity="0.08"/>
+        <rect x="508" y="60" width="44" height="12" rx="2" fill="none" stroke="#bf4520" stroke-width="0.8" stroke-opacity="0.50"/>
+        <text x="530" y="69" fill="#bf4520" font-size="7" font-family="'Geist Mono', monospace" text-anchor="middle" letter-spacing="0.08em">IPv6</text>
+        <text x="640" y="88" fill="#2d3142" font-size="12" font-weight="600" font-family="'Geist', sans-serif" text-anchor="middle">Plan d'adressage CaaScad</text>
+        <text x="640" y="104" fill="#4f5d75" font-size="9" font-family="'Geist Mono', monospace" text-anchor="middle">128 bits · 3 espaces distincts</text>
+
+        <!-- Tier 1: Scopes -->
+        <!-- GUA -->
+        <rect x="236" y="184" width="280" height="64" rx="6" fill="#f5f5f5"/>
+        <rect x="236" y="184" width="280" height="64" rx="6" fill="#ffffff" stroke="#2d3142" stroke-width="1"/>
+        <rect x="244" y="192" width="32" height="12" rx="2" fill="none" stroke="#2d3142" stroke-width="0.8" stroke-opacity="0.40"/>
+        <text x="260" y="201" fill="#2d3142" font-size="7" font-family="'Geist Mono', monospace" text-anchor="middle" letter-spacing="0.08em">GUA</text>
+        <text x="376" y="220" fill="#2d3142" font-size="12" font-weight="600" font-family="'Geist', sans-serif" text-anchor="middle">Préfixe routé public</text>
+        <text x="376" y="236" fill="#4f5d75" font-size="9" font-family="'Geist Mono', monospace" text-anchor="middle">2001:678:3fc:bb00::/56 (256 x /64)</text>
+
+        <!-- ULA -->
+        <rect x="784" y="184" width="240" height="64" rx="6" fill="#f5f5f5"/>
+        <rect x="784" y="184" width="240" height="64" rx="6" fill="#ffffff" stroke="#2d3142" stroke-width="1"/>
+        <rect x="792" y="192" width="32" height="12" rx="2" fill="none" stroke="#2d3142" stroke-width="0.8" stroke-opacity="0.40"/>
+        <text x="808" y="201" fill="#2d3142" font-size="7" font-family="'Geist Mono', monospace" text-anchor="middle" letter-spacing="0.08em">ULA</text>
+        <text x="904" y="220" fill="#2d3142" font-size="12" font-weight="600" font-family="'Geist', sans-serif" text-anchor="middle">Préfixe privé local</text>
+        <text x="904" y="236" fill="#4f5d75" font-size="9" font-family="'Geist Mono', monospace" text-anchor="middle">fd07:63fe:c5dd::/48</text>
+
+        <!-- NAT64 -->
+        <rect x="1040" y="184" width="200" height="64" rx="6" fill="#f5f5f5"/>
+        <rect x="1040" y="184" width="200" height="64" rx="6" fill="#2d3142" stroke="#2d3142" stroke-width="1" fill-opacity="0.03" stroke-opacity="0.30"/>
+        <rect x="1048" y="192" width="44" height="12" rx="2" fill="none" stroke="#2d3142" stroke-width="0.8" stroke-opacity="0.22"/>
+        <text x="1070" y="201" fill="#5a6580" font-size="7" font-family="'Geist Mono', monospace" text-anchor="middle" letter-spacing="0.08em">NAT64</text>
+        <text x="1140" y="220" fill="#2d3142" font-size="12" font-weight="600" font-family="'Geist', sans-serif" text-anchor="middle">Passerelle IPv4</text>
+        <text x="1140" y="236" fill="#4f5d75" font-size="9" font-family="'Geist Mono', monospace" text-anchor="middle">64:ff9b::/96 (RFC 6052)</text>
+
+        <!-- Tier 2: Blocks -->
+        <!-- Block 1: Pools Pods -->
+        <rect x="64" y="312" width="200" height="64" rx="6" fill="#f5f5f5"/>
+        <rect x="64" y="312" width="200" height="64" rx="6" fill="#ffffff" stroke="#2d3142" stroke-width="1"/>
+        <text x="164" y="340" fill="#2d3142" font-size="12" font-weight="600" font-family="'Geist', sans-serif" text-anchor="middle">Pools Pods BGP</text>
+        <text x="164" y="358" fill="#4f5d75" font-size="9" font-family="'Geist Mono', monospace" text-anchor="middle">bb00::/60 · bb10::/60</text>
+
+        <!-- Block 2: Nodes & LB -->
+        <rect x="276" y="312" width="200" height="64" rx="6" fill="#f5f5f5"/>
+        <rect x="276" y="312" width="200" height="64" rx="6" fill="#ffffff" stroke="#2d3142" stroke-width="1"/>
+        <text x="376" y="340" fill="#2d3142" font-size="12" font-weight="600" font-family="'Geist', sans-serif" text-anchor="middle">Nœuds &amp; LoadBalancer</text>
+        <text x="376" y="358" fill="#4f5d75" font-size="9" font-family="'Geist Mono', monospace" text-anchor="middle">bb20::/64 à bb24::/64</text>
+
+        <!-- Block 3: VLANs Services & LANs -->
+        <rect x="488" y="312" width="200" height="64" rx="6" fill="#f5f5f5"/>
+        <rect x="488" y="312" width="200" height="64" rx="6" fill="#ffffff" stroke="#2d3142" stroke-width="1"/>
+        <text x="588" y="340" fill="#2d3142" font-size="12" font-weight="600" font-family="'Geist', sans-serif" text-anchor="middle">VLANs &amp; WAN Transit</text>
+        <text x="588" y="358" fill="#4f5d75" font-size="9" font-family="'Geist Mono', monospace" text-anchor="middle">bb30..31 · bb40..43 · bbff</text>
+
+        <!-- Block 4: OOB & HA -->
+        <rect x="708" y="312" width="192" height="64" rx="6" fill="#f5f5f5"/>
+        <rect x="708" y="312" width="192" height="64" rx="6" fill="#ffffff" stroke="#2d3142" stroke-width="1"/>
+        <text x="804" y="340" fill="#2d3142" font-size="12" font-weight="600" font-family="'Geist', sans-serif" text-anchor="middle">Admin OOB &amp; Sync HA</text>
+        <text x="804" y="358" fill="#4f5d75" font-size="9" font-family="'Geist Mono', monospace" text-anchor="middle">VLAN 790 (1::) &amp; 791 (2::)</text>
+
+        <!-- Block 5: Service CIDR -->
+        <rect x="912" y="312" width="184" height="64" rx="6" fill="#f5f5f5"/>
+        <rect x="912" y="312" width="184" height="64" rx="6" fill="#ffffff" stroke="#2d3142" stroke-width="1"/>
+        <text x="1004" y="340" fill="#2d3142" font-size="12" font-weight="600" font-family="'Geist', sans-serif" text-anchor="middle">ClusterIP K8s</text>
+        <text x="1004" y="358" fill="#4f5d75" font-size="9" font-family="'Geist Mono', monospace" text-anchor="middle">101::/112 · 102::/112</text>
+
+        <!-- Block 6: NAT64 synthesis -->
+        <rect x="1108" y="312" width="132" height="64" rx="6" fill="#f5f5f5"/>
+        <rect x="1108" y="312" width="132" height="64" rx="6" fill="#2d3142" stroke="#4f5d75" stroke-width="0.8" fill-opacity="0.05"/>
+        <text x="1174" y="336" fill="#2d3142" font-size="12" font-weight="600" font-family="'Geist', sans-serif" text-anchor="middle">Tayga + DNS64</text>
+        <text x="1174" y="354" fill="#4f5d75" font-size="9" font-family="'Geist Mono', monospace" text-anchor="middle">IPv4 10.254.0.0/29</text>
+        <text x="1174" y="368" fill="#5a6580" font-size="9" font-family="'Geist Mono', monospace" text-anchor="middle">VLAN 780 vers nat-gw</text>
+
+        <!-- Tier 3: Subnets (compact 2-line leaf nodes) -->
+        <!-- Pods Int -->
+        <rect x="64" y="440" width="96" height="140" rx="6" fill="#f5f5f5"/>
+        <rect x="64" y="440" width="96" height="140" rx="6" fill="#2d3142" stroke="#4f5d75" stroke-width="0.8" fill-opacity="0.05"/>
+        <text x="112" y="468" fill="#2d3142" font-size="12" font-weight="600" font-family="'Geist', sans-serif" text-anchor="middle">Pods Int</text>
+        <text x="112" y="492" fill="#4f5d75" font-size="9" font-family="'Geist Mono', monospace" text-anchor="middle">bb00::/60</text>
+        <text x="112" y="516" fill="#5a6580" font-size="9" font-family="'Geist Mono', monospace" text-anchor="middle">16 x /64</text>
+        <text x="112" y="536" fill="#5a6580" font-size="9" font-family="'Geist Mono', monospace" text-anchor="middle">AS 65001</text>
+
+        <!-- Pods Cli -->
+        <rect x="168" y="440" width="96" height="140" rx="6" fill="#f5f5f5"/>
+        <rect x="168" y="440" width="96" height="140" rx="6" fill="#2d3142" stroke="#4f5d75" stroke-width="0.8" fill-opacity="0.05"/>
+        <text x="216" y="468" fill="#2d3142" font-size="12" font-weight="600" font-family="'Geist', sans-serif" text-anchor="middle">Pods Cli</text>
+        <text x="216" y="492" fill="#4f5d75" font-size="9" font-family="'Geist Mono', monospace" text-anchor="middle">bb10::/60</text>
+        <text x="216" y="516" fill="#5a6580" font-size="9" font-family="'Geist Mono', monospace" text-anchor="middle">16 x /64</text>
+        <text x="216" y="536" fill="#5a6580" font-size="9" font-family="'Geist Mono', monospace" text-anchor="middle">AS 65002</text>
+
+        <!-- Int Nodes & LB -->
+        <rect x="276" y="440" width="96" height="140" rx="6" fill="#f5f5f5"/>
+        <rect x="276" y="440" width="96" height="140" rx="6" fill="#2d3142" stroke="#4f5d75" stroke-width="0.8" fill-opacity="0.05"/>
+        <text x="324" y="468" fill="#2d3142" font-size="12" font-weight="600" font-family="'Geist', sans-serif" text-anchor="middle">Interne</text>
+        <text x="324" y="492" fill="#4f5d75" font-size="9" font-family="'Geist Mono', monospace" text-anchor="middle">770: bb20</text>
+        <text x="324" y="512" fill="#4f5d75" font-size="9" font-family="'Geist Mono', monospace" text-anchor="middle">LB Priv: bb21</text>
+        <text x="324" y="532" fill="#4f5d75" font-size="9" font-family="'Geist Mono', monospace" text-anchor="middle">LB Pub: bb22</text>
+
+        <!-- Cli Nodes & LB -->
+        <rect x="380" y="440" width="96" height="140" rx="6" fill="#f5f5f5"/>
+        <rect x="380" y="440" width="96" height="140" rx="6" fill="#2d3142" stroke="#4f5d75" stroke-width="0.8" fill-opacity="0.05"/>
+        <text x="428" y="468" fill="#2d3142" font-size="12" font-weight="600" font-family="'Geist', sans-serif" text-anchor="middle">Client</text>
+        <text x="428" y="492" fill="#4f5d75" font-size="9" font-family="'Geist Mono', monospace" text-anchor="middle">769: bb23</text>
+        <text x="428" y="512" fill="#4f5d75" font-size="9" font-family="'Geist Mono', monospace" text-anchor="middle">LB Cli: bb24</text>
+        <text x="428" y="532" fill="#5a6580" font-size="9" font-family="'Geist Mono', monospace" text-anchor="middle">Envoy + L4</text>
+
+        <!-- Bureaux -->
+        <rect x="488" y="440" width="96" height="140" rx="6" fill="#f5f5f5"/>
+        <rect x="488" y="440" width="96" height="140" rx="6" fill="#2d3142" stroke="#4f5d75" stroke-width="0.8" fill-opacity="0.05"/>
+        <text x="536" y="468" fill="#2d3142" font-size="12" font-weight="600" font-family="'Geist', sans-serif" text-anchor="middle">Classe 308</text>
+        <text x="536" y="492" fill="#4f5d75" font-size="9" font-family="'Geist Mono', monospace" text-anchor="middle">759 User: bb30</text>
+        <text x="536" y="512" fill="#4f5d75" font-size="9" font-family="'Geist Mono', monospace" text-anchor="middle">758 Cop: bb31</text>
+        <text x="536" y="532" fill="#5a6580" font-size="9" font-family="'Geist Mono', monospace" text-anchor="middle">RA + DHCPv6</text>
+
+        <!-- VMs Services & WAN -->
+        <rect x="592" y="440" width="96" height="140" rx="6" fill="#f5f5f5"/>
+        <rect x="592" y="440" width="96" height="140" rx="6" fill="#2d3142" stroke="#4f5d75" stroke-width="0.8" fill-opacity="0.05"/>
+        <text x="640" y="468" fill="#2d3142" font-size="12" font-weight="600" font-family="'Geist', sans-serif" text-anchor="middle">Infra &amp; WAN</text>
+        <text x="640" y="492" fill="#4f5d75" font-size="9" font-family="'Geist Mono', monospace" text-anchor="middle">760-63: bb40-43</text>
+        <text x="640" y="512" fill="#4f5d75" font-size="9" font-family="'Geist Mono', monospace" text-anchor="middle">780 WAN: bbff</text>
+        <text x="640" y="532" fill="#5a6580" font-size="9" font-family="'Geist Mono', monospace" text-anchor="middle">VIP :ffff</text>
+
+        <!-- OOB 790 -->
+        <rect x="704" y="440" width="96" height="140" rx="6" fill="#f5f5f5"/>
+        <rect x="704" y="440" width="96" height="140" rx="6" fill="#2d3142" stroke="#4f5d75" stroke-width="0.8" fill-opacity="0.05"/>
+        <text x="752" y="468" fill="#2d3142" font-size="12" font-weight="600" font-family="'Geist', sans-serif" text-anchor="middle">VLAN 790</text>
+        <text x="752" y="492" fill="#4f5d75" font-size="9" font-family="'Geist Mono', monospace" text-anchor="middle">1:1:: Int · 1:2:: Cli</text>
+        <text x="752" y="512" fill="#4f5d75" font-size="9" font-family="'Geist Mono', monospace" text-anchor="middle">1:3:: FW · 1:4:: Svc</text>
+        <text x="752" y="532" fill="#4f5d75" font-size="9" font-family="'Geist Mono', monospace" text-anchor="middle">1:5:: Multus</text>
+
+        <!-- HA 791 -->
+        <rect x="808" y="440" width="96" height="140" rx="6" fill="#f5f5f5"/>
+        <rect x="808" y="440" width="96" height="140" rx="6" fill="#2d3142" stroke="#4f5d75" stroke-width="0.8" fill-opacity="0.05"/>
+        <text x="856" y="468" fill="#2d3142" font-size="12" font-weight="600" font-family="'Geist', sans-serif" text-anchor="middle">VLAN 791</text>
+        <text x="856" y="492" fill="#4f5d75" font-size="9" font-family="'Geist Mono', monospace" text-anchor="middle">fd07:...:2::/64</text>
+        <text x="856" y="512" fill="#5a6580" font-size="9" font-family="'Geist Mono', monospace" text-anchor="middle">pfsync · CARP</text>
+        <text x="856" y="532" fill="#5a6580" font-size="9" font-family="'Geist Mono', monospace" text-anchor="middle">XMLRPC sync</text>
+
+        <!-- ClusterIP -->
+        <rect x="916" y="440" width="176" height="140" rx="6" fill="#f5f5f5"/>
+        <rect x="916" y="440" width="176" height="140" rx="6" fill="#2d3142" stroke="#4f5d75" stroke-width="0.8" fill-opacity="0.05"/>
+        <text x="1004" y="468" fill="#2d3142" font-size="12" font-weight="600" font-family="'Geist', sans-serif" text-anchor="middle">Services internes</text>
+        <text x="1004" y="492" fill="#4f5d75" font-size="9" font-family="'Geist Mono', monospace" text-anchor="middle">Interne : ...:101::/112</text>
+        <text x="1004" y="512" fill="#4f5d75" font-size="9" font-family="'Geist Mono', monospace" text-anchor="middle">Client  : ...:102::/112</text>
+        <text x="1004" y="532" fill="#5a6580" font-size="9" font-family="'Geist Mono', monospace" text-anchor="middle">Non routé hors nœuds</text>
+
+        <!-- Legend strip -->
+        <line x1="40" y1="628" x2="1240" y2="628" stroke="#2d3142" stroke-width="0.8" stroke-opacity="0.10"/>
+        <text x="40" y="648" fill="#4f5d75" font-size="8" font-family="'Geist Mono', monospace" letter-spacing="0.14em">LÉGENDE</text>
+
+        <rect x="40" y="664" width="14" height="10" rx="2" fill="#bf4520" stroke="#bf4520" stroke-width="1" fill-opacity="0.08"/>
+        <text x="60" y="672" fill="#4f5d75" font-size="8.5" font-family="'Geist', sans-serif">Racine du plan d'adressage</text>
+
+        <rect x="240" y="664" width="14" height="10" rx="2" fill="#ffffff" stroke="#2d3142" stroke-width="1"/>
+        <text x="260" y="672" fill="#4f5d75" font-size="8.5" font-family="'Geist', sans-serif">Blocs GUA / ULA principaux</text>
+
+        <rect x="444" y="664" width="14" height="10" rx="2" fill="#2d3142" stroke="#4f5d75" stroke-width="0.8" fill-opacity="0.05"/>
+        <text x="464" y="672" fill="#4f5d75" font-size="8.5" font-family="'Geist', sans-serif">Sous-réseaux feuille attribués aux VLANs et pools</text>
+      </svg>
